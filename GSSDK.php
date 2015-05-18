@@ -1,11 +1,10 @@
 <?php
  /*
 * Copyright (C) 2013 Gigya, Inc.
-* Version 2.15.6
+* Version 2.15.7
 * 
 * 
 * Gigya PHP SDK
-* @author Guy schaller
 */
 
 if (!function_exists('curl_init')) {
@@ -45,7 +44,7 @@ class GSKeyNotFoundException extends GSException{
 class GSRequest { 	 
 	private static $cafile;
 	const DEFAULT_API_DOMAIN = "us1.gigya.com";
-	const version = "2.15.6";
+	const version = "2.15.7";
 	
 	private $host;
   	private $domain;
