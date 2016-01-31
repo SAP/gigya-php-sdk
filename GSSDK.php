@@ -297,7 +297,12 @@ class GSRequest
 
         curl_close($ch);
 
-        list($header, $body) = explode("\r\n\r\n", $result, 2);
+        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        curl_close($ch);
+
+        $header = trim(substr($result, 0, $header_size));
+        $body = substr($result, $header_size);
+
         $headers = explode("\r\n", $header);
         foreach ($headers as $value) {
             $kvp = explode(":", $value);
