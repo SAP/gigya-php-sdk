@@ -1,11 +1,9 @@
 <?php
 /*
-* Copyright (C) 2013 Gigya, Inc.
-* Version 2.15.7
-* 
-* 
-* Gigya PHP SDK
-*/
+ * Gigya PHP SDK
+ *
+ * http://developers.gigya.com/display/GD/PHP
+ */
 
 if (!function_exists('curl_init')) {
     throw new Exception('Gigya.Socialize needs the CURL PHP extension.');
