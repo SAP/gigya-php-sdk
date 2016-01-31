@@ -295,8 +295,6 @@ class GSRequest
             throw new Exception($err);
         }
 
-        curl_close($ch);
-
         $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
         curl_close($ch);
 
