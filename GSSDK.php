@@ -40,7 +40,7 @@ class GSRequest
 {
     private static $cafile;
     const DEFAULT_API_DOMAIN = "us1.gigya.com";
-    const version = "2.15.8";
+    const version = "2.15.9";
 
     private $host;
     private $domain;
@@ -1025,6 +1025,20 @@ class SigUtils
         $signedExpString = SigUtils::calcSignature($unsignedExpString, $secret); // sign the base string using the secret key
 
         $ret = $expirationTimeUnix . '_' . $signedExpString;   // define the cookie value
+
+        return $ret;
+    }
+
+    public static function getDynamicSessionSignatureUserSigned($glt_cookie, $timeoutInSeconds, $userKey, $secret)
+    {
+        // cookie format:
+        // <expiration time in unix time format>_<User Key>_BASE64(HMACSHA1(secret key, <login token>_<expiration time in unix time format>_<User Key>))
+        $expirationTimeUnixMS = (SigUtils::currentTimeMillis() / 1000) + $timeoutInSeconds;
+        $expirationTimeUnix = (string)floor($expirationTimeUnixMS);
+        $unsignedExpString = $glt_cookie . "_" . $expirationTimeUnix . "_" . $userKey;
+        $signedExpString = SigUtils::calcSignature($unsignedExpString, $secret); // sign the base string using the secret key
+
+        $ret = $expirationTimeUnix . "_" . $userKey . "_" . $signedExpString;   // define the cookie value
 
         return $ret;
     }
