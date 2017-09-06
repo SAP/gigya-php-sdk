@@ -79,7 +79,7 @@ class GSRequest
      * @param userKey userKey A key of an admin user with extra permissions.
      * If this parameter is provided, then the secretKey parameter is assumed to be the admin user's secret key and not the site's secret key.
      */
-    public function __construct($apiKey, $secretKey, $apiMethod, $params = null, $useHTTPS = false, $userKey = null)
+    public function __construct($apiKey, $secretKey, $apiMethod, $params = null, $useHTTPS = true, $userKey = null)
     {
         if (!isset($apiMethod) || strlen($apiMethod) == 0)
             return;
