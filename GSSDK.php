@@ -272,7 +272,7 @@ class GSRequest
             CURLOPT_POST => 1,
             CURLOPT_HEADER => 1,
             CURLOPT_POSTFIELDS => $qs,
-            CURLOPT_HTTPHEADER => array('Expect:'),
+            CURLOPT_HTTPHEADER => array(),
             CURLOPT_RETURNTRANSFER => TRUE,
             CURLOPT_SSL_VERIFYPEER => TRUE,
             CURLOPT_SSL_VERIFYHOST => 2,
