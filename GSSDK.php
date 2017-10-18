@@ -8,10 +8,10 @@
  * http://developers.gigya.com/display/GD/PHP
  */
 if (!function_exists('curl_init')) {
-    throw new Exception('Gigya.Socialize needs the CURL PHP extension.');
+    throw new Exception('Gigya PHP SDK needs the CURL PHP extension.');
 }
 if (!function_exists('json_decode')) {
-    throw new Exception('Gigya.Socialize needs the JSON PHP extension.');
+    throw new Exception('Gigya PHP SDK needs the JSON PHP extension.');
 }
 
 require_once('GSException_Class.php');

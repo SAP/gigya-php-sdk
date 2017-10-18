@@ -6,7 +6,7 @@ class GSRequest
 {
     private static $cafile;
     const DEFAULT_API_DOMAIN = "us1.gigya.com";
-    const version = "2.15.9";
+    const version = "2.17.0";
     private $host;
     private $domain;
     private $path;
