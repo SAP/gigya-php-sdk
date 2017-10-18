@@ -36,7 +36,7 @@ class GSRequest
      * @param apiMethod the api method (including namespace) to call. for example: socialize.getUserInfo
      * If namespaces is not supplied "socialize" is assumed
      * @param params the request parameters
-     * @param useHTTPS useHTTPS set this to true if you want to use HTTPS.
+     * @param useHTTPS useHTTPS set this to false if you DO NOT want to use HTTPS.
      * @param userKey userKey A key of an admin user with extra permissions.
      * If this parameter is provided, then the secretKey parameter is assumed to be the admin user's secret key and not the site's secret key.
      */
