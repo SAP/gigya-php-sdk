@@ -2,6 +2,12 @@
 /**
  * A Request to Gigya Socialize API
  */
+require_once('GSException_Class.php');
+require_once('GSKeyNotFoundException_Class.php');
+require_once('GSResponse_Class.php');
+require_once('GSObject_Class.php');
+require_once('GSArray_Class.php');
+require_once('SigUtils_Class.php');
 class GSRequest
 {
     private static $cafile;

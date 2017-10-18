@@ -1,4 +1,10 @@
 <?php
+require_once('GSException_Class.php');
+require_once('GSKeyNotFoundException_Class.php');
+require_once('GSRequest_Class.php');
+require_once('GSResponse_Class.php');
+require_once('GSObject_Class.php');
+require_once('GSArray_Class.php');
 class SigUtils
 {
     public static function validateUserSignature($UID, $timestamp, $secret, $signature)

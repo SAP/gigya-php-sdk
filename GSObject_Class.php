@@ -5,6 +5,12 @@
  *
  * @version 1.0
  */
+require_once('GSException_Class.php');
+require_once('GSKeyNotFoundException_Class.php');
+require_once('GSRequest_Class.php');
+require_once('GSResponse_Class.php');
+require_once('GSArray_Class.php');
+require_once('SigUtils_Class.php');
 class GSObject
 {
     private $map;

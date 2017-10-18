@@ -13,7 +13,6 @@ if (!function_exists('curl_init')) {
 if (!function_exists('json_decode')) {
     throw new Exception('Gigya PHP SDK needs the JSON PHP extension.');
 }
-
 require_once('GSException_Class.php');
 require_once('GSKeyNotFoundException_Class.php');
 require_once('GSRequest_Class.php');
