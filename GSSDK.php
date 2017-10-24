@@ -12,10 +12,10 @@ if (!function_exists('curl_init')) {
 if (!function_exists('json_decode')) {
     throw new Exception('Gigya PHP SDK needs the JSON PHP extension.');
 }
-require_once('/GSException_Class.php');
-require_once('/GSKeyNotFoundException_Class.php');
-require_once('/GSRequest_Class.php');
-require_once('/GSResponse_Class.php');
-require_once('/GSObject_Class.php');
-require_once('/GSArray_Class.php');
-require_once('/SigUtils_Class.php');
+require_once('GSSDK.lib/GSException_Class.php');
+require_once('GSSDK.lib/GSKeyNotFoundException_Class.php');
+require_once('GSSDK.lib/GSRequest_Class.php');
+require_once('GSSDK.lib/GSResponse_Class.php');
+require_once('GSSDK.lib/GSObject_Class.php');
+require_once('GSSDK.lib/GSArray_Class.php');
+require_once('GSSDK.lib/SigUtils_Class.php');
