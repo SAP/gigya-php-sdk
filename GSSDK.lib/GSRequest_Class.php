@@ -12,7 +12,7 @@ class GSRequest
 {
     private static $cafile;
     const DEFAULT_API_DOMAIN = "us1.gigya.com";
-    const version = "2.17.0";
+    const version = "2.17.1";
     private $host;
     private $domain;
     private $path;
@@ -30,7 +30,7 @@ class GSRequest
     private $apiDomain = self::DEFAULT_API_DOMAIN;
     static function __constructStatic()
     {
-        GSRequest::$cafile = realpath('./cacert.pem');
+        GSRequest::$cafile = realpath(dirname(__FILE__).'/cacert.pem');
     }
     /**
      * Constructs a request using an apiKey and secretKey.
