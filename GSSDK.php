@@ -2,7 +2,7 @@
 /*
  * Gigya PHP SDK
  *
- * version 2.17.0
+ * version 2.17.1
  *
  * http://developers.gigya.com/display/GD/PHP
  */
