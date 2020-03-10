@@ -15,7 +15,7 @@ The library makes it simple to integrate Gigya services in your PHP application.
 ## Configuration
 * [Obtain a Gigya APIKey and Secret key](https://developers.gigya.com/display/GD/PHP#PHP-ObtainingGigya'sAPIKeyandSecretkey).
 * Copy all PHP SDK files to the same location of your PHP application path.
-* Include the GSSDK.php file in your PHP application::
+* Include the GSSDK.php file in your PHP application:
 ```PHP
 include_once "/PATH_TO/GSSDK.php";
 ```
