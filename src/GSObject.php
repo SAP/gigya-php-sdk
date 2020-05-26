@@ -1,29 +1,28 @@
 <?php
+
+namespace Gigya\PHP;
+
+use Exception;
+
 /**
- * Used for passing parameters when issueing requests e.g. GSRequest.send
+ * Used for passing parameters when issuing requests e.g. GSRequest.send
  * As well as returning response data e.g. GSResponse.getData
- *
- * @version 1.0
  */
-require_once('GSException_Class.php');
-require_once('GSKeyNotFoundException_Class.php');
-require_once('GSRequest_Class.php');
-require_once('GSResponse_Class.php');
-require_once('GSArray_Class.php');
-require_once('SigUtils_Class.php');
 class GSObject
 {
     private $map;
-    /* PUBLIC INTERFACE */
+
     /**
-     * Construct a GSObject from json string, throws excpetion.
+     * Construct a GSObject from json string, throws exception.
      *
      * @param string|object the json formatted string
-     * @throws Exception if unable to parse json
+     *
+     * @throws GSException if unable to parse json
      */
     public function __construct($json = null)
     {
         $this->map = array();
+
         if (!empty($json)) {
             //parse json string.
             if (gettype($json) == 'string') {
@@ -37,22 +36,28 @@ class GSObject
             self::processJsonObject($obj, $this);
         }
     }
+
+    /**
+     * @return array
+     */
     public function serialize()
     {
-        $arr = Array();
+        $arr = array();
         if (empty($this->map)) return $arr;
         $arr = $this->serializeGSObject($this);
         return $arr;
     }
+
     public static function serializeGSObject($gsd)
     {
-        $arr = Array();
+        $arr = array();
         foreach ($gsd->map as $name => $value) {
             $val = GSObject::serializeValue($value);
             $arr[$name] = $val;
         }
         return $arr;
     }
+
     public static function serializeValue($value)
     {
         //GSDictionary
@@ -66,62 +71,136 @@ class GSObject
             return $value;
         }
     }
+
     /* Put */
     const DEFAULT_VALUE = '@@EMPTY@@';
+
     public function put($key, $value)
     {
         $this->map[$key] = $value;
     }
+
+	/**
+	 * @param $key
+	 * @param $defaultValue
+	 *
+	 * @return mixed
+	 * @throws GSKeyNotFoundException
+	 */
     private function get($key, $defaultValue)
     {
         if (array_key_exists($key, $this->map)) {
             return $this->map[$key];
         }
+
         if ($defaultValue !== GSObject::DEFAULT_VALUE) {
             return $defaultValue;
         }
+
         throw new GSKeyNotFoundException($key);
     }
-    /* GET BOOLEAN */
+
+    /**
+	 * Get Boolean
+	 *
+	 * @param        $key
+	 * @param string $defaultValue
+	 *
+	 * @return bool
+	 * @throws GSKeyNotFoundException
+	 */
     public function getBool($key, $defaultValue = GSObject::DEFAULT_VALUE)
     {
         return (bool)$this->get($key, $defaultValue);
     }
-    /* GET INTEGER */
+
+	/**
+	 * Get Integer
+	 *
+	 * @param        $key
+	 * @param string $defaultValue
+	 *
+	 * @return int
+	 * @throws GSKeyNotFoundException
+	 */
     public function getInt($key, $defaultValue = GSObject::DEFAULT_VALUE)
     {
         return (int)$this->get($key, $defaultValue);
     }
-    /* GET LONG */
+
+	/**
+	 * Get Long
+	 *
+	 * @param        $key
+	 * @param string $defaultValue
+	 *
+	 * @return float
+	 * @throws GSKeyNotFoundException
+	 */
     public function getLong($key, $defaultValue = GSObject::DEFAULT_VALUE)
     {
         return (float)$this->get($key, $defaultValue);
     }
-    /* GET DOUBLE */
+
+	/**
+	 * Get Double
+	 *
+	 * @param        $key
+	 * @param string $defaultValue
+	 *
+	 * @return float
+	 * @throws GSKeyNotFoundException
+	 */
     public function getDouble($key, $defaultValue = GSObject::DEFAULT_VALUE)
     {
         return (double)$this->get($key, $defaultValue);
     }
-    /* GET STRING */
+
+	/**
+	 * Get String
+	 *
+	 * @param        $key
+	 * @param string $defaultValue
+	 *
+	 * @return string
+	 * @throws GSKeyNotFoundException
+	 */
     public function getString($key, $defaultValue = GSObject::DEFAULT_VALUE)
     {
         $obj = $this->get($key, $defaultValue);
         return (string)$obj;
     }
-    /* GET GSOBJECT */
+
+	/**
+	 * Get GSObject
+	 *
+	 * @param $key
+	 *
+	 * @return object
+	 * @throws GSKeyNotFoundException
+	 */
     public function getObject($key)
     {
         return (object)$this->get($key, null);
     }
-    /* GET GSOBJECT[] */
+
+	/**
+	 * Get GSObject[]
+	 *
+	 * @param $key
+	 *
+	 * @return mixed
+	 * @throws GSKeyNotFoundException
+	 */
     public function getArray($key)
     {
         return $this->get($key, null);
     }
+
     /**
      * Parse parameters from URL into the dictionary
      *
-     * @param url
+     * @param $url
      */
     public function parseURL($url)
     {
@@ -137,38 +216,45 @@ class GSObject
     /**
      * Parse parameters from query string
      *
-     * @param qs
+     * @param $qs
      */
     public function parseQueryString($qs)
     {
         if (!isset($qs)) return;
         parse_str($qs, $this->map);
     }
+
     public function containsKey($key)
     {
         return array_key_exists($key, $this->map);
     }
+
     public function remove($key)
     {
         unset($this->map[$key]);
     }
+
     public function clear()
     {
         unset($this->map);
         $this->map = array();
     }
+
     public function getKeys()
     {
         return array_keys($this->map);
     }
+
     public function __toString()
     {
         return $this->toJsonString();
     }
+
     public function toString()
     {
         return $this->toJsonString();
     }
+
     public function toJsonString()
     {
         try {
@@ -177,6 +263,14 @@ class GSObject
             return null;
         }
     }
+
+	/**
+	 * @param object   $jo
+	 * @param GSObject $parentObj
+	 *
+	 * @return mixed
+	 * @throws GSException
+	 */
     private static function processJsonObject($jo, $parentObj)
     {
         if (!empty($jo))
