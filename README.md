@@ -14,10 +14,10 @@ The library makes it simple to integrate Gigya services in your PHP application.
 * Run `composer update`
 
 ### In a project
-* Run `composer config repositories.gigyaphpsdk git hhttps://github.com/SAP/gigya-php-sdk.git`
+* Run `composer config repositories.gigyaphpsdk git https://github.com/SAP/gigya-php-sdk.git`
 * Run `composer require gigya/php-sdk`
 
-It will now be possible to autoload Gigya PHP SDK: `user Gigya\PHP`.
+It will now be possible to autoload Gigya PHP SDK: `use Gigya\PHP`.
 
 ## Configuration
 * [Obtain a Gigya APIKey and authentication details](https://developers.gigya.com/display/GD/PHP#PHP-ObtainingGigya'sAPIKeyandSecretkey).
