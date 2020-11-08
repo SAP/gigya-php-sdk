@@ -16,7 +16,7 @@ class JWTUtilsTest extends TestCase
      * @param $privateKey
      * @param $publicKey
      *
-     * @dataProvider \Gigya\PHP\Test\JwtAuthDataProvider::provideValidKeyPair
+     * @dataProvider \Gigya\PHP\Test\JwtAuthDataProvider::provideFakeValidKeyPair
      *
      * @throws Exception
      */

@@ -22,7 +22,7 @@ class JWTUtils
      *
      * @throws Exception
      */
-    public static function getBearerToken($privateKey, $userKey, $nonce = null)
+    public static function getBearerToken(string $privateKey, string $userKey, $nonce = null)
     {
         $jti = $nonce ?? SigUtils::currentTimeMillis() . rand(); /* PHP 7.0+ */
         $payload = [
@@ -44,7 +44,7 @@ class JWTUtils
      *
      * @throws Exception
      */
-    public static function validateSignature($jwt, $apiKey, $apiDomain)
+    public static function validateSignature(string $jwt, string $apiKey, string $apiDomain)
     {
         /* Validate input and get KID */
         if (!$jwt) {
