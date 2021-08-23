@@ -1,4 +1,7 @@
 # Gigya SDK for PHP 
+
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP/gigya-php-sdk)](https://api.reuse.software/info/github.com/SAP/gigya-php-sdk)
+
 Learn more: https://developers.gigya.com/display/GD/PHP
 
 ## Description
@@ -44,3 +47,6 @@ Via pull request to this repository.
 
 ## To-Do (upcoming changes)
 None
+
+## Licensing
+Copyright 2020-2021 SAP SE or an SAP affiliate company and gigya-php-sdk contributors. Please see our [LICENSE](LICENSE.txt) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available [via the REUSE tool](https://api.reuse.software/info/github.com/SAP/gigya-php-sdk).
