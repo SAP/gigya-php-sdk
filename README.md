@@ -44,3 +44,5 @@ Via pull request to this repository.
 
 ## To-Do (upcoming changes)
 None
+
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP/gigya-php-sdk)](https://api.reuse.software/info/github.com/SAP/gigya-php-sdk)
