@@ -1,5 +1,5 @@
 # PHP SDK  
-[Learn more] (https://help.sap.com/viewer/8b8d6fffe113457094a17701f63e3d6a/GIGYA/en-US/4168a6ba70b21014bbc5a10ce4041860.html)
+[Learn more](https://help.sap.com/viewer/8b8d6fffe113457094a17701f63e3d6a/GIGYA/en-US/4168a6ba70b21014bbc5a10ce4041860.html)
 
 ## Description
 The PHP SDK, provides a PHP interface for the Gigya API. 
@@ -12,17 +12,17 @@ The library makes it simple to integrate Gigya services in your PHP application.
 ### Standalone
 * Clone the repo.
 * Run `composer update`.
+### In a project
+* Run `composer config repositories.gigyaphpsdk git https://github.com/SAP/gigya-php-sdk.git`
+* Run `composer require gigya/php-sdk`
+
+It will now be possible to autoload Gigya PHP SDK: `use Gigya\PHP`.
 
 ## Configuration
 * [Obtain a Gigya APIKey and authentication details](https://developers.gigya.com/display/GD/PHP#PHP-ObtainingGigya'sAPIKeyandSecretkey).
 * Follow the installation instructions above.
 * Start using according to [documentation](https://developers.gigya.com/display/GD/PHP).
 
-### In a project
-* Run `composer config repositories.gigyaphpsdk git https://github.com/SAP/gigya-php-sdk.git`
-* Run `composer require gigya/php-sdk`
-
-It will now be possible to autoload Gigya PHP SDK: `use Gigya\PHP`.
 
 ## Running tests
 * Copy `tests/provideAuthDetails.json.dist` to `tests/provideAuthDetails.json`
@@ -36,7 +36,7 @@ None
 None
 
 ## How to obtain support
-[Learn more] (https://help.sap.com/viewer/8b8d6fffe113457094a17701f63e3d6a/GIGYA/en-US/4167e8a470b21014bbc5a10ce4041860.html)
+[Learn more](https://help.sap.com/viewer/8b8d6fffe113457094a17701f63e3d6a/GIGYA/en-US/4167e8a470b21014bbc5a10ce4041860.html)
 
 
 ## Contributing
