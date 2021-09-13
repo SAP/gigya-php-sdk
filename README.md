@@ -1,5 +1,5 @@
-# Gigya SDK for PHP 
-Learn more: https://developers.gigya.com/display/GD/PHP
+# PHP SDK  
+[Learn more] (https://help.sap.com/viewer/8b8d6fffe113457094a17701f63e3d6a/GIGYA/en-US/4168a6ba70b21014bbc5a10ce4041860.html)
 
 ## Description
 The PHP SDK, provides a PHP interface for the Gigya API. 
@@ -10,8 +10,13 @@ The library makes it simple to integrate Gigya services in your PHP application.
 
 ## Download and Installation
 ### Standalone
-* Clone the repo
-* Run `composer update`
+* Clone the repo.
+* Run `composer update`.
+
+## Configuration
+* [Obtain a Gigya APIKey and authentication details](https://developers.gigya.com/display/GD/PHP#PHP-ObtainingGigya'sAPIKeyandSecretkey).
+* Follow the installation instructions above.
+* Start using according to [documentation](https://developers.gigya.com/display/GD/PHP).
 
 ### In a project
 * Run `composer config repositories.gigyaphpsdk git https://github.com/SAP/gigya-php-sdk.git`
@@ -19,10 +24,10 @@ The library makes it simple to integrate Gigya services in your PHP application.
 
 It will now be possible to autoload Gigya PHP SDK: `use Gigya\PHP`.
 
-## Configuration
-* [Obtain a Gigya APIKey and authentication details](https://developers.gigya.com/display/GD/PHP#PHP-ObtainingGigya'sAPIKeyandSecretkey).
-* Follow the installation instructions above
-* Start using according to [documentation](https://developers.gigya.com/display/GD/PHP).
+## Running tests
+* Copy `tests/provideAuthDetails.json.dist` to `tests/provideAuthDetails.json`
+* If testing JWT-related functions, create a private key file.
+* Enter the relevant authentication details and the private key file path in `tests/provideAuthDetails.json`.
 
 ## Limitations
 None
@@ -31,13 +36,8 @@ None
 None
 
 ## How to obtain support
-Via SAP standard support.
-https://developers.gigya.com/display/GD/Opening+A+Support+Incident
+[Learn more] (https://help.sap.com/viewer/8b8d6fffe113457094a17701f63e3d6a/GIGYA/en-US/4167e8a470b21014bbc5a10ce4041860.html)
 
-## Running tests
-* Copy `tests/provideAuthDetails.json.dist` to `tests/provideAuthDetails.json`
-* If testing JWT-related functions, create a private key file
-* Enter the relevant authentication details and the private key file path in `tests/provideAuthDetails.json` 
 
 ## Contributing
 Via pull request to this repository.
