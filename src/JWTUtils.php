@@ -5,6 +5,7 @@ namespace Gigya\PHP;
 use Exception;
 use Firebase\JWT\JWK;
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use InvalidArgumentException;
 use stdClass;
 use UnexpectedValueException;
@@ -16,15 +17,15 @@ class JWTUtils
      *
      * @param string $privateKey
      * @param string $userKey
-     * @param string $nonce
+     * @param string|null $nonce
      *
      * @return string
      *
      * @throws Exception
      */
-    public static function getBearerToken(string $privateKey, string $userKey, $nonce = null)
+    public static function getBearerToken(string $privateKey, string $userKey, string|null $nonce = null): string
     {
-        $jti = $nonce ?? SigUtils::currentTimeMillis() . rand(); /* PHP 7.0+ */
+        $jti = $nonce ?? SigUtils::currentTimeMillis() . rand();
         $payload = [
             'iat' => time(),
             'jti' => $jti,
@@ -40,11 +41,11 @@ class JWTUtils
      * @param string $apiKey
      * @param string $apiDomain
      *
-     * @return stdClass|bool
+     * @return stdClass|false
      *
      * @throws Exception
      */
-    public static function validateSignature(string $jwt, string $apiKey, string $apiDomain)
+    public static function validateSignature(string $jwt, string $apiKey, string $apiDomain): stdClass|false
     {
         /* Validate input and get KID */
         if (!$jwt) {
@@ -68,24 +69,24 @@ class JWTUtils
         }
 
         try {
-            $jwtInfo = JWT::decode($jwt, $jwk, ['RS256']);
-
-            return $jwtInfo ?? false; /* PHP 7.0+ */
+			JWT::$leeway = 5;
+            $jwtInfo = JWT::decode($jwt, new Key($jwk, 'RS256'));
+            return $jwtInfo ?? false;
         } catch (UnexpectedValueException $e) {
             return false;
         }
     }
 
     /**
-     * @param $apiKey
-     * @param $apiDomain
-     * @param $kid
+     * @param string $apiKey
+     * @param string $apiDomain
+     * @param string $kid
      *
-     * @return string|resource
+     * @return Key|false
      *
      * @throws GSException
      */
-    private static function getJWKByKid($apiKey, $apiDomain, $kid) {
+    private static function getJWKByKid(string $apiKey, string $apiDomain, string $kid): Key|false {
         if (($jwks = self::readPublicKeyCache($apiDomain)) === false) {
             $jwks = self::fetchPublicJWKs($apiKey, $apiDomain);
         }
@@ -106,14 +107,14 @@ class JWTUtils
     }
 
     /**
-     * @param $apiKey
-     * @param $apiDomain
+     * @param string $apiKey
+     * @param string $apiDomain
      *
-     * @return array|null
+     * @return array<string, Key>|null
      *
      * @throws GSException
      */
-    private static function fetchPublicJWKs($apiKey, $apiDomain)
+    private static function fetchPublicJWKs(string $apiKey, string $apiDomain): array|null
     {
         $request = new GSRequest($apiKey, null, 'accounts.getJWTPublicKey');
         $request->setAPIDomain($apiDomain);
@@ -138,15 +139,15 @@ class JWTUtils
     }
 
     /**
-     * @param array  $publicKeys
-     * @param string $apiDomain
+	 * @param array<Key> $publicKeys
+	 * @param string $apiDomain
      *
      * @return int|false Bytes written to cache file or false on failure
      */
-    private static function addToPublicKeyCache($publicKeys, $apiDomain)
+    private static function addToPublicKeyCache(array $publicKeys, string $apiDomain): int|false
     {
         foreach ($publicKeys as $kid => $key) {
-            if (!empty($pem = openssl_pkey_get_details($key)['key'])) {
+            if (!empty($pem = openssl_pkey_get_details($key->getKeyMaterial())['key'])) {
                 $publicKeys[$kid] = $pem;
             } else {
                 return false;
@@ -163,7 +164,7 @@ class JWTUtils
      *
      * @return array|false Returns false if the cache file does not exist, or if reading the file or decoding the JSON array in it fails
      */
-    private static function readPublicKeyCache($apiDomain)
+    private static function readPublicKeyCache(string $apiDomain): array|false
     {
         $filename = __DIR__ . '/keys/' . $apiDomain . '_keys.txt';
 
