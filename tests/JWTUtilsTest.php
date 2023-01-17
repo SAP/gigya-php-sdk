@@ -4,9 +4,9 @@ namespace Gigya\PHP\Test;
 
 use Exception;
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use Gigya\PHP\GSKeyNotFoundException;
 use Gigya\PHP\GSRequest;
-use PHPUnit\Framework\Error\Warning;
 use PHPUnit\Framework\TestCase;
 use Gigya\PHP\JWTUtils;
 
@@ -25,7 +25,7 @@ class JWTUtilsTest extends TestCase
         $userKey = 'myUserKey';
 
         $bearerToken = JWTUtils::getBearerToken($privateKey, $userKey);
-        $jwtDetails = JWT::decode($bearerToken, $publicKey, ['RS256']);
+		$jwtDetails = JWT::decode($bearerToken, new Key($publicKey, 'RS256'));
 
         $this->assertTrue($jwtDetails instanceof \stdClass);
         $this->assertObjectHasAttribute('iat', $jwtDetails);
@@ -40,7 +40,7 @@ class JWTUtilsTest extends TestCase
         $incorrectPrivateKey = rand();
         $userKey = rand();
 
-        $this->expectException(Warning::class);
+        $this->expectWarning();
 
         JWTUtils::getBearerToken($incorrectPrivateKey, $userKey);
     }
@@ -56,7 +56,7 @@ class JWTUtilsTest extends TestCase
      *
      * @throws Exception
      */
-    public function testValidateSignature($apiKey, $apiDomain, $userKey, $privateKey, $uid)
+    public function testValidateSignature(string $apiKey, string $apiDomain, string $userKey, string $privateKey, string $uid)
     {
         $jwt = $this->getJWT($apiKey, $apiDomain, $userKey, $privateKey, $uid);
         $this->assertNotFalse($jwt);
@@ -78,7 +78,7 @@ class JWTUtilsTest extends TestCase
      *
      * @throws GSKeyNotFoundException
      */
-    private function getJWT($apiKey, $apiDomain, $userKey, $privateKey, $uid)
+    private function getJWT(string $apiKey, string $apiDomain, string $userKey, string $privateKey, string $uid): string|false
     {
         $request = new GSRequest($apiKey,
             null,

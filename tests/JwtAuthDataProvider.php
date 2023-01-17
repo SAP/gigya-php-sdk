@@ -14,7 +14,7 @@ class JwtAuthDataProvider
      *
      * @return array
      */
-    public function provideAuthDetails()
+    public function provideAuthDetails(): array
     {
         $jsonDataProvider = __DIR__ . '/' . __FUNCTION__ . '.json';
 
@@ -34,7 +34,7 @@ class JwtAuthDataProvider
             }
         }
 
-        return $returnData ?? [ /* PHP 7.0+ */
+        return $returnData ?? [
                 [
                     'apiKey' => '',
                     'apiDomain' => '',

@@ -6,7 +6,7 @@ The PHP SDK, provides a PHP interface for the Gigya API.
 The library makes it simple to integrate Gigya services in your PHP application.
 
 ## Requirements
-[PHP 7.x.](https://www.php.net/downloads) , [PHP 8.x.](https://www.php.net/downloads)
+[PHP 7.x.](https://www.php.net/downloads) , [PHP 8.1](https://www.php.net/downloads)
 
 ## Download and Installation
 ### Standalone

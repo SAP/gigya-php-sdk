@@ -67,45 +67,45 @@ class GSRequestWithUserKeyPrivateKeyTest extends TestCase
     }
 
     /**
-     * @param $apiKey
-     * @param $apiDomain
-     * @param $userKey
-     * @param $privateKey
+     * @param string $apiKey
+     * @param string $apiDomain
+     * @param string $userKey
+     * @param string $privateKey
      *
      * @return GSResponse
      *
      * @throws GSKeyNotFoundException
      */
-    private function sendAccountsSearchRequest($apiKey, $apiDomain, $userKey, $privateKey) {
+    private function sendAccountsSearchRequest(string $apiKey, string $apiDomain, string $userKey, string $privateKey): GSResponse {
         return $this->sendRequest($apiKey, $apiDomain, $userKey, $privateKey, 'accounts.search', array('query' => 'SELECT * FROM user LIMIT 1'));
     }
 
     /**
-     * @param $apiKey
-     * @param $apiDomain
-     * @param $userKey
-     * @param $privateKey
-     * @param $uid
+     * @param string $apiKey
+     * @param string $apiDomain
+     * @param string $userKey
+     * @param string $privateKey
+     * @param string $uid
      *
      * @return GSResponse
      * @throws GSKeyNotFoundException
      */
-    private function sendGetAccountInfoRequest($apiKey, $apiDomain, $userKey, $privateKey, $uid) {
+    private function sendGetAccountInfoRequest(string $apiKey, string $apiDomain, string $userKey, string $privateKey, string $uid): GSResponse {
         return $this->sendRequest($apiKey, $apiDomain, $userKey, $privateKey, 'accounts.getAccountInfo', array('uid' => $uid));
     }
 
     /**
-     * @param $apiKey
-     * @param $apiDomain
-     * @param $userKey
-     * @param $privateKey
-     * @param $apiMethod
-     * @param $params
+     * @param string $apiKey
+     * @param string $apiDomain
+     * @param string $userKey
+     * @param string $privateKey
+     * @param string $apiMethod
+     * @param array $params
      *
      * @return GSResponse
      * @throws GSKeyNotFoundException
      */
-    private function sendRequest($apiKey, $apiDomain, $userKey, $privateKey, $apiMethod, $params) {
+    private function sendRequest(string $apiKey, string $apiDomain, string $userKey, string $privateKey, string $apiMethod, array $params): GSResponse {
         $request = new GSRequest($apiKey,
             null,
             $apiMethod,
