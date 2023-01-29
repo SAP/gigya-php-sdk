@@ -58,8 +58,8 @@ class SigUtils
 
     static function calcSignature($baseString, $key)
     {
-        $baseString = utf8_encode($baseString);
-        $rawHmac = hash_hmac("sha1", utf8_encode($baseString), base64_decode($key), true);
+		$baseString = mb_convert_encoding($baseString, 'uTF-8', mb_list_encodings());
+        $rawHmac = hash_hmac("sha1", $baseString, base64_decode($key), true);
 
         return base64_encode($rawHmac);
     }
