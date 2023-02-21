@@ -2,7 +2,7 @@
 [Learn more](https://help.sap.com/viewer/8b8d6fffe113457094a17701f63e3d6a/GIGYA/en-US/4168a6ba70b21014bbc5a10ce4041860.html)
 
 ## Description
-The PHP SDK, provides a PHP interface for the Gigya API. 
+The PHP SDK provides a PHP interface for the Gigya API. 
 The library makes it simple to integrate Gigya services in your PHP application.
 
 ## Requirements
@@ -18,6 +18,8 @@ The library makes it simple to integrate Gigya services in your PHP application.
 
 It will now be possible to autoload Gigya PHP SDK: `use Gigya\PHP`.
 
+Note: If the project does not use Composer natively / as part of a framework, it is necessary to include `vendor/autoload.php` in your project.
+
 ## Configuration
 * [Obtain a Gigya APIKey and authentication details](https://developers.gigya.com/display/GD/PHP#PHP-ObtainingGigya'sAPIKeyandSecretkey).
 * Follow the installation instructions above.
@@ -25,9 +27,9 @@ It will now be possible to autoload Gigya PHP SDK: `use Gigya\PHP`.
 
 
 ## Running tests
-* Copy `tests/provideAuthDetails.json.dist` to `tests/provideAuthDetails.json`
-* If testing JWT-related functions, create a private key file.
-* Enter the relevant authentication details and the private key file path in `tests/provideAuthDetails.json`.
+1. Copy `tests/provideAuthDetails.json.dist` to `tests/provideAuthDetails.json`
+2. If testing JWT-related functions, create a private key file.
+3. Enter the relevant authentication details and the private key file path in `tests/provideAuthDetails.json`.
 
 ## Limitations
 None
