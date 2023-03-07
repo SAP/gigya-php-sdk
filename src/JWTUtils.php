@@ -82,11 +82,11 @@ class JWTUtils
      * @param string $apiDomain
      * @param string $kid
      *
-     * @return Key|false
+     * @return Key|string|false
      *
      * @throws GSException
      */
-    private static function getJWKByKid(string $apiKey, string $apiDomain, string $kid): Key|false {
+    private static function getJWKByKid(string $apiKey, string $apiDomain, string $kid): Key|string|false {
         if (($jwks = self::readPublicKeyCache($apiDomain)) === false) {
             $jwks = self::fetchPublicJWKs($apiKey, $apiDomain);
         }
