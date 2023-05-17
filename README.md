@@ -44,7 +44,7 @@ None
 Via pull request to this repository.
 
 ## Code of Conduct
-See[CODE_OF_CONDUCT](https://github.om/SAP/gigya-php-sdk/blob/main/CODE_OF_CONDUCT.md)
+See [CODE_OF_CONDUCT](https://github.com/SAP/gigya-php-sdk/blob/main/CODE_OF_CONDUCT.md)
 
 ## To-Do (upcoming changes)
 None
