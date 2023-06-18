@@ -12,6 +12,8 @@ use UnexpectedValueException;
 
 class JWTUtils
 {
+    const RSA_ALG = 'RS256';
+
     /**
      * Composes a JWT to be used as a bearer token for authentication with Gigya
      *
@@ -31,7 +33,7 @@ class JWTUtils
             'jti' => $jti,
         ];
 
-        return JWT::encode($payload, $privateKey, 'RS256', $userKey);
+        return JWT::encode($payload, $privateKey, self::RSA_ALG, $userKey);
     }
 
     /**
@@ -69,9 +71,8 @@ class JWTUtils
         }
 
         try {
-			JWT::$leeway = 5;
-            $jwtInfo = JWT::decode($jwt, new Key($jwk, 'RS256'));
-            return $jwtInfo ?? false;
+            JWT::$leeway = 5;
+            return JWT::decode($jwt, $jwk);
         } catch (UnexpectedValueException $e) {
             return false;
         }
@@ -172,6 +173,11 @@ class JWTUtils
             return false;
         }
 
-        return json_decode(file_get_contents($filename), true);
+        $jwks = json_decode(file_get_contents($filename), true);
+        array_walk($jwks, function(&$jwk) {
+            $jwk = new Key($jwk, self::RSA_ALG);
+        });
+
+        return $jwks;
     }
 }

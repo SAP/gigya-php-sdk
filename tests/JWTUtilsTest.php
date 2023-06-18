@@ -58,13 +58,18 @@ class JWTUtilsTest extends TestCase
      */
     public function testValidateSignature(string $apiKey, string $apiDomain, string $userKey, string $privateKey, string $uid)
     {
-        $jwt = $this->getJWT($apiKey, $apiDomain, $userKey, $privateKey, $uid);
-        $this->assertNotFalse($jwt);
+        /* Requires at least two passes because getJWT behaves differently on the first path, if the public key isn't cached. */
+        $passes = 2;
 
-        $claims = JWTUtils::validateSignature($jwt, $apiKey, $apiDomain);
-        $this->assertEquals($claims->apiKey, $apiKey);
-        $this->assertEquals($claims->sub, $uid);
-        $this->assertNotEmpty($claims->email);
+        for ($i = 0; $i < $passes; $i++) {
+            $jwt = $this->getJWT($apiKey, $apiDomain, $userKey, $privateKey, $uid);
+            $this->assertNotFalse($jwt);
+
+            $claims = JWTUtils::validateSignature($jwt, $apiKey, $apiDomain);
+            $this->assertEquals($claims->apiKey, $apiKey);
+            $this->assertEquals($claims->sub, $uid);
+            $this->assertNotEmpty($claims->email);
+        }
     }
 
     /**
