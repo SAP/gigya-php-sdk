@@ -72,7 +72,8 @@ class JWTUtilsTest extends TestCase
         $this->assertEquals($claims->sub, $uid);
         $this->assertNotEmpty($claims->email);
 
-        $claims = JWTUtils::validateSignature($jwt, $apiKey, $apiDomain);
+        JWTUtils::validateSignature($jwt, $apiKey, $apiDomain); /* This one writes to the cache */
+        $claims = JWTUtils::validateSignature($jwt, $apiKey, $apiDomain); /* This one validates against the cache */
         $this->assertEquals($claims->apiKey, $apiKey);
         $this->assertEquals($claims->sub, $uid);
         $this->assertNotEmpty($claims->email);
