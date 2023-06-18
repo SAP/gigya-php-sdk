@@ -58,7 +58,7 @@ class JWTUtilsTest extends TestCase
      */
     public function testValidateSignature(string $apiKey, string $apiDomain, string $userKey, string $privateKey, string $uid)
     {
-        /* Requires at least two passes because getJWT behaves differently on the first path, if the public key isn't cached. */
+        /* Requires at least two passes because getJWT behaves differently on the first pass, if the public key isn't cached. */
         $passes = 2;
 
         for ($i = 0; $i < $passes; $i++) {
