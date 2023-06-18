@@ -39,15 +39,16 @@ class JWTUtils
     /**
      * Validates JWT signature
      *
-     * @param string $jwt
-     * @param string $apiKey
-     * @param string $apiDomain
+     * @param string $jwt The JWT to validate
+     * @param string $apiKey The API key of the site where the JWT is being validated
+     * @param string $apiDomain The API domain (data center) where the site is located. For global sites, use the primary data center.
+     * @param bool $ignoreCache If set to true, it will always contact Gigya in order to get the RSA public key. This could slow down performance considerably, and should not be used in production environments.
      *
      * @return stdClass|false
      *
      * @throws Exception
      */
-    public static function validateSignature(string $jwt, string $apiKey, string $apiDomain): stdClass|false
+    public static function validateSignature(string $jwt, string $apiKey, string $apiDomain, bool $ignoreCache = false): stdClass|false
     {
         /* Validate input and get KID */
         if (!$jwt) {
@@ -65,7 +66,7 @@ class JWTUtils
         }
 
         try {
-            $jwk = self::getJWKByKid($apiKey, $apiDomain, $kid);
+            $jwk = self::getJWKByKid($apiKey, $apiDomain, $kid, $ignoreCache);
         } catch (GSException $e) {
             return false;
         }
@@ -82,20 +83,24 @@ class JWTUtils
      * @param string $apiKey
      * @param string $apiDomain
      * @param string $kid
+     * @param bool $ignoreCache
      *
      * @return Key|false
      *
      * @throws GSException
      */
-    private static function getJWKByKid(string $apiKey, string $apiDomain, string $kid): Key|false {
-        if (($jwks = self::readPublicKeyCache($apiDomain)) === false) {
-            $jwks = self::fetchPublicJWKs($apiKey, $apiDomain);
+    private static function getJWKByKid(string $apiKey, string $apiDomain, string $kid, bool $ignoreCache = false): Key|false {
+        if (!$ignoreCache) {
+            $jwks = self::readPublicKeyCache($apiDomain);
+            if ($jwks === false) {
+                $jwks = self::fetchPublicJWKs($apiKey, $apiDomain, $ignoreCache);
+            }
         }
 
         if (isset($jwks[$kid])) {
             $jwk = $jwks[$kid];
         } else {
-            $jwks = self::fetchPublicJWKs($apiKey, $apiDomain);
+            $jwks = self::fetchPublicJWKs($apiKey, $apiDomain, $ignoreCache);
 
             if (isset($jwks[$kid])) {
                 $jwk = $jwks[$kid];
@@ -110,12 +115,13 @@ class JWTUtils
     /**
      * @param string $apiKey
      * @param string $apiDomain
+     * @param bool $ignoreCache
      *
      * @return array<string, Key>|null
      *
      * @throws GSException
      */
-    private static function fetchPublicJWKs(string $apiKey, string $apiDomain): array|null
+    private static function fetchPublicJWKs(string $apiKey, string $apiDomain, bool $ignoreCache = false): array|null
     {
         $request = new GSRequest($apiKey, null, 'accounts.getJWTPublicKey');
         $request->setAPIDomain($apiDomain);
@@ -131,7 +137,9 @@ class JWTUtils
                 throw new GSException('Unable to retrieve public key: ' . $e->getMessage());
             }
 
-            self::addToPublicKeyCache($publicKeys, $apiDomain);
+            if (!$ignoreCache) {
+                self::addToPublicKeyCache($publicKeys, $apiDomain);
+            }
 
             return $publicKeys;
         }
@@ -140,8 +148,8 @@ class JWTUtils
     }
 
     /**
-	 * @param array<Key> $publicKeys
-	 * @param string $apiDomain
+     * @param array<Key> $publicKeys
+     * @param string $apiDomain
      *
      * @return int|false Bytes written to cache file or false on failure
      */
