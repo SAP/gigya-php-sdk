@@ -62,6 +62,7 @@ class JWTUtilsTest extends TestCase
         if (file_exists($cacheFilePath)) {
             unlink($cacheFilePath);
         }
+        $this->assertFileNotExists($cacheFilePath);
 
         $jwt = $this->getJWT($apiKey, $apiDomain, $userKey, $privateKey, $uid);
         $this->assertNotFalse($jwt);
@@ -73,6 +74,8 @@ class JWTUtilsTest extends TestCase
         $this->assertNotEmpty($claims->email);
 
         JWTUtils::validateSignature($jwt, $apiKey, $apiDomain); /* This one writes to the cache */
+        $this->assertFileExists($cacheFilePath);
+
         $claims = JWTUtils::validateSignature($jwt, $apiKey, $apiDomain); /* This one validates against the cache */
         $this->assertEquals($claims->apiKey, $apiKey);
         $this->assertEquals($claims->sub, $uid);
