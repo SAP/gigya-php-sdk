@@ -58,10 +58,25 @@ class JWTUtilsTest extends TestCase
      */
     public function testValidateSignature(string $apiKey, string $apiDomain, string $userKey, string $privateKey, string $uid)
     {
+        $cacheFilePath = __DIR__ . '/../src/keys/' . $apiDomain . '_keys.txt';
+        if (file_exists($cacheFilePath)) {
+            unlink($cacheFilePath);
+        }
+        $this->assertFileNotExists($cacheFilePath);
+
         $jwt = $this->getJWT($apiKey, $apiDomain, $userKey, $privateKey, $uid);
         $this->assertNotFalse($jwt);
 
-        $claims = JWTUtils::validateSignature($jwt, $apiKey, $apiDomain);
+        /* Requires at least two passes because getJWT behaves differently on the first pass, if the public key isn't cached. This is why ignoreCache is used */
+        $claims = JWTUtils::validateSignature($jwt, $apiKey, $apiDomain, true);
+        $this->assertEquals($claims->apiKey, $apiKey);
+        $this->assertEquals($claims->sub, $uid);
+        $this->assertNotEmpty($claims->email);
+
+        JWTUtils::validateSignature($jwt, $apiKey, $apiDomain); /* This one writes to the cache */
+        $this->assertFileExists($cacheFilePath);
+
+        $claims = JWTUtils::validateSignature($jwt, $apiKey, $apiDomain); /* This one validates against the cache */
         $this->assertEquals($claims->apiKey, $apiKey);
         $this->assertEquals($claims->sub, $uid);
         $this->assertNotEmpty($claims->email);
