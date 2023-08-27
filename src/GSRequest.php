@@ -222,7 +222,9 @@ class GSRequest
         }
 
         if (!empty($secret) or !empty($privateKey)) {
-            $params->put("apiKey", $token);
+            if (!empty($token)) {
+                $params->put("apiKey", $token);
+            }
             $params->put("timestamp", $timestamp);
 
             if (!empty($secret)) {
