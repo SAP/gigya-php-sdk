@@ -1,2 +1,5 @@
 # IntelliJ IDEA
 .idea/
+# Composer files
+composer.lock
+vendor/
