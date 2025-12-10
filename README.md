@@ -25,6 +25,77 @@ Note: If the project does not use Composer natively / as part of a framework, it
 * Follow the installation instructions above.
 * Start using according to [documentation](https://developers.gigya.com/display/GD/PHP).
 
+## mTLS Authentication
+
+The SDK supports mutual TLS (mTLS) authentication using client certificates. This provides an additional layer of security by authenticating both the client and server.
+
+### Basic Usage with Certificate Files
+
+```php
+use Gigya\PHP\GSRequest;
+
+$request = new GSRequest(
+    null,                    // apiKey (optional with mTLS)
+    null,                    // secretKey (optional with mTLS)
+    'accounts.getAccountInfo',
+    null,
+    true,                    // useHTTPS (required for mTLS)
+    null
+);
+
+$request->setAPIDomain('us1.gigya.com');
+
+// Set client certificate (file paths)
+$request->setClientCertificate(
+    'certs/client.pem',      // Path to certificate file
+    'certs/client.key',      // Path to private key file
+    'password'               // Optional: password if key is encrypted
+);
+
+$response = $request->send();
+```
+
+### Example with Certificate Content (Strings)
+
+You can also provide certificate and key content directly as strings, which is useful when loading from environment variables or secure storage:
+
+```php
+// Load certificates from files or environment variables
+$certContent = file_get_contents('certs/client.pem');
+$keyContent = file_get_contents('certs/client.key');
+
+// Or from environment variables
+$certContent = getenv('GIGYA_CLIENT_CERT');
+$keyContent = getenv('GIGYA_CLIENT_KEY');
+
+// Create request with certificate content
+$request = new GSRequest(
+    null,
+    null,
+    'accounts.getAccountInfo',
+    null,
+    true,
+    null
+);
+
+$request->setAPIDomain('us1.gigya.com');
+
+// Pass certificate content as strings (SDK automatically creates temp files)
+$request->setClientCertificate(
+    $certContent,            // Certificate content as string
+    $keyContent,             // Key content as string
+    null                     // Optional: password if key is encrypted
+);
+
+$response = $request->send();
+```
+
+**Note:** Both certificate and key must be provided together for mTLS authentication. They can be either:
+- **File paths** (strings): `'certs/client.pem'`
+- **PEM content** (strings): Raw certificate/key data starting with `-----BEGIN`
+
+The SDK automatically detects whether you're passing a file path or PEM content and handles it accordingly.
+
 
 ## Running tests
 1. Copy `tests/provideAuthDetails.json.dist` to `tests/provideAuthDetails.json`
