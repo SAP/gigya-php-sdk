@@ -174,6 +174,12 @@ class GSRequest
             $this->host = $tokens[0] . "." . $this->apiDomain;
             $this->path = "/" . $this->method;
         }
+        
+        // When using mTLS, always use accounts.gigya.com as the host
+        if ($this->clientCertPath && $this->clientKeyPath) {
+            $this->host = "accounts.gigya.com";
+        }
+        
         //set json as default format.
         if (empty($format)) {
             $format = "json";
