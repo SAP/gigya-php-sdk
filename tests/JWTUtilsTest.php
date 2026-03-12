@@ -40,7 +40,7 @@ class JWTUtilsTest extends TestCase
         $incorrectPrivateKey = rand();
         $userKey = rand();
 
-        $this->expectWarning();
+        $this->expectException(\DomainException::class);
 
         JWTUtils::getBearerToken($incorrectPrivateKey, $userKey);
     }
