@@ -112,22 +112,6 @@ class GSRequest
     }
     
     /**
-     * Resolves the mTLS domain based on the configured API domain.
-     *
-     * Extracts the datacenter from the API domain (the first segment before the first dot)
-     * and returns mtls.{datacenter}.gigya.com.
-     *
-     * @return string The mTLS domain (e.g. mtls.eu1.gigya.com)
-     */
-    public function getMtlsDomain()
-    {
-        $parts = explode('.', $this->apiDomain);
-        $datacenter = $parts[0] ?: 'us1';
-
-        return 'mtls.' . $datacenter . '.gigya.com';
-    }
-
-    /**
      * Sets the client certificate for mTLS authentication
      * 
      * Supports both file paths and PEM content strings:
@@ -191,9 +175,9 @@ class GSRequest
             $this->path = "/" . $this->method;
         }
         
-        // When using mTLS, override the host with the mTLS domain
+        // When using mTLS, always use accounts.gigya.com as the host
         if ($this->clientCertPath && $this->clientKeyPath) {
-            $this->host = $this->getMtlsDomain();
+            $this->host = "accounts.gigya.com";
         }
         
         //set json as default format.
