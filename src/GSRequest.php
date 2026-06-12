@@ -289,7 +289,6 @@ class GSRequest
             throw new Exception($err);
         }
         $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-        curl_close($ch);
 
         $header = trim(substr($result, 0, $header_size));
         $body = substr($result, $header_size);
