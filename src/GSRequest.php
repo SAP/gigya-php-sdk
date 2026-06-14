@@ -293,8 +293,12 @@ class GSRequest
                 $signature = self::getOAuth1Signature($secret, $httpMethod, $resourceURI, $params);
                 $params->put("sig", $signature);
             }
-        } else if (!empty($token) && !$this->isMtls()) {
-            $params->put("oauth_token", $token);
+        } else if (!empty($token)) {
+            if ($this->isMtls()) {
+                $params->put("apiKey", $token);
+            } else {
+                $params->put("oauth_token", $token);
+            }
         }
 
         /* Send the request to Gigya */
