@@ -128,6 +128,17 @@ class GSRequest
     }
 
     /**
+     * Indicates whether mTLS is configured for this request
+     * (i.e. both a client certificate and key path are set).
+     *
+     * @return bool
+     */
+    public function isMtls()
+    {
+        return !empty($this->clientCertPath) && !empty($this->clientKeyPath);
+    }
+
+    /**
      * Sets the client certificate for mTLS authentication
      * 
      * Supports both file paths and PEM content strings:
@@ -192,7 +203,7 @@ class GSRequest
         }
         
         // When using mTLS, override the host with the mTLS domain
-        if ($this->clientCertPath && $this->clientKeyPath) {
+        if ($this->isMtls()) {
             $this->host = $this->getMtlsDomain();
         }
         
@@ -204,7 +215,7 @@ class GSRequest
         if (!empty($timeout)) {
             $this->traceField("timeout", $timeout);
         }
-        if (empty($this->method) || (empty($this->apiKey) && empty($this->userKey) && empty($this->clientCertPath))) {
+        if (empty($this->method) || (empty($this->apiKey) && empty($this->userKey) && !$this->isMtls())) {
             return new GSResponse($this->method, null, $this->params, 400002, null, $this->traceLog);
         }
         if ($this->useHTTPS && empty(GSRequest::$cafile)) {
@@ -282,7 +293,7 @@ class GSRequest
                 $signature = self::getOAuth1Signature($secret, $httpMethod, $resourceURI, $params);
                 $params->put("sig", $signature);
             }
-        } else if (!empty($token)) {
+        } else if (!empty($token) && !$this->isMtls()) {
             $params->put("oauth_token", $token);
         }
 
@@ -330,7 +341,7 @@ class GSRequest
         );
         
         // Add mTLS certificate options if configured
-        if ($this->clientCertPath && $this->clientKeyPath) {
+        if ($this->isMtls()) {
             $defaults[CURLOPT_SSLCERT] = $this->clientCertPath;
             $defaults[CURLOPT_SSLKEY] = $this->clientKeyPath;
             
