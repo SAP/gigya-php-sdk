@@ -31,6 +31,61 @@ Note: If the project does not use Composer natively / as part of a framework, it
 2. If testing JWT-related functions, create a private key file.
 3. Enter the relevant authentication details and the private key file path in `tests/provideAuthDetails.json`.
 
+## Using Mutual TLS (mTLS) Authentication
+
+For high-security server-to-server communication, you can authenticate using a client X.509 certificate instead of (or alongside) the site secret. When mTLS is configured, the SDK automatically routes the request to the datacenter-specific endpoint `mtls.{datacenter}.gigya.com` and presents the certificate during the TLS handshake.
+
+### Example with Certificate Files
+
+```php
+use Gigya\PHP\GSRequest;
+
+// Create a request — apiKey/secretKey are not required when using mTLS
+$request = new GSRequest(
+    'your-api-key',
+    null,                        // no secretKey
+    'accounts.getAccountInfo',
+    null,
+    true                         // useHTTPS — required for mTLS
+);
+
+$request->setAPIDomain('us1.gigya.com');
+$request->setParam('UID', 'user123');
+
+// Configure the client certificate
+$request->setClientCertificate(
+    'certs/client.pem',          // Path to client certificate
+    'certs/client.key'           // Path to private key
+);
+
+$response = $request->send();
+
+if ($response->getErrorCode() == 0) {
+    echo "Success: " . $response->getResponseText();
+} else {
+    echo "Error: " . $response->getErrorMessage();
+}
+```
+
+### Example with PEM Content
+
+You can also pass certificate and key content directly as PEM strings, which is useful when loading from environment variables or a secret store. PEM strings are written to short-lived temp files for the duration of the request.
+
+```php
+$certPem = getenv('MTLS_CERT_PEM');
+$keyPem  = getenv('MTLS_KEY_PEM');
+
+$request->setClientCertificate($certPem, $keyPem);
+```
+
+If the private key is encrypted, pass the password as the third argument:
+
+```php
+$request->setClientCertificate('certs/client.pem', 'certs/client.key', 'key-password');
+```
+
+**Note:** Both the certificate and key must be provided together. Each can be either a file path or PEM content.
+
 ## Limitations
 None
 
