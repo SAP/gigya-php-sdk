@@ -61,7 +61,7 @@ class JWTUtils
         if (empty($jwtArray = json_decode(base64_decode($jwtHeader), true))) {
             throw new InvalidArgumentException('Invalid JWT format');
         }
-        if (empty($kid = $jwtArray['kid'])) {
+        if (!isset($jwtArray['kid']) || empty($kid = $jwtArray['kid'])) {
             throw new InvalidArgumentException('No KID field found in JWT');
         }
 
