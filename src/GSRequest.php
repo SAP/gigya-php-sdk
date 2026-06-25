@@ -12,7 +12,7 @@ class GSRequest
     private static $cafile;
 
     const DEFAULT_API_DOMAIN = "us1.gigya.com";
-    const version = "3.0.9";
+    const version = "3.1.0";
 
     private $host;
     private $domain;
@@ -30,6 +30,11 @@ class GSRequest
     private $params; // GSObject
     private $useHTTPS;
     private $apiDomain = self::DEFAULT_API_DOMAIN;
+    
+    // mTLS certificate properties
+    private $clientCertPath;
+    private $clientKeyPath;
+    private $clientKeyPassword;
 
     static function __constructStatic()
     {
@@ -105,6 +110,58 @@ class GSRequest
         else
             $this->apiDomain = $apiDomain;
     }
+    
+    /**
+     * Resolves the mTLS domain based on the configured API domain.
+     *
+     * Extracts the datacenter from the API domain (the first segment before the first dot)
+     * and returns mtls.{datacenter}.gigya.com.
+     *
+     * @return string The mTLS domain (e.g. mtls.eu1.gigya.com)
+     */
+    public function getMtlsDomain()
+    {
+        $parts = explode('.', $this->apiDomain);
+        $datacenter = $parts[0] ?: 'us1';
+
+        return 'mtls.' . $datacenter . '.gigya.com';
+    }
+
+    /**
+     * Indicates whether mTLS is configured for this request
+     * (i.e. both a client certificate and key path are set).
+     *
+     * @return bool
+     */
+    public function isMtls()
+    {
+        return !empty($this->clientCertPath) && !empty($this->clientKeyPath);
+    }
+
+    /**
+     * Sets the client certificate for mTLS authentication
+     * 
+     * Supports both file paths and PEM content strings:
+     * - If the value is a file path that exists, it will be used as-is
+     * - If the value contains PEM content (starts with "-----BEGIN"), a temp file will be created
+     *
+     * @param string $cert Path to client certificate file OR PEM certificate content string
+     * @param string $key Path to client private key file OR PEM key content string
+     * @param string $keyPassword Optional password for the private key
+     * 
+     * @throws Exception if certificate files are not found or invalid
+     */
+    public function setClientCertificate($cert, $key, $keyPassword = null)
+    {
+        $this->clientCertPath = CertificateUtils::resolveCertificatePath($cert, 'cert');
+        $this->clientKeyPath = CertificateUtils::resolveCertificatePath($key, 'key');
+        $this->clientKeyPassword = $keyPassword;
+        
+        $this->traceField("mTLS", "enabled");
+        $this->traceField("clientCert", $this->clientCertPath);
+        $this->traceField("clientKey", $this->clientKeyPath);
+    }
+    
     public static function setCAFile($filename)
     {
         GSRequest::$cafile = $filename;
@@ -144,6 +201,12 @@ class GSRequest
             $this->host = $tokens[0] . "." . $this->apiDomain;
             $this->path = "/" . $this->method;
         }
+        
+        // When using mTLS, override the host with the mTLS domain
+        if ($this->isMtls()) {
+            $this->host = $this->getMtlsDomain();
+        }
+        
         //set json as default format.
         if (empty($format)) {
             $format = "json";
@@ -152,7 +215,7 @@ class GSRequest
         if (!empty($timeout)) {
             $this->traceField("timeout", $timeout);
         }
-        if (empty($this->method) || (empty($this->apiKey) and empty($this->userKey))) {
+        if (empty($this->method) || (empty($this->apiKey) && empty($this->userKey) && !$this->isMtls())) {
             return new GSResponse($this->method, null, $this->params, 400002, null, $this->traceLog);
         }
         if ($this->useHTTPS && empty(GSRequest::$cafile)) {
@@ -230,8 +293,12 @@ class GSRequest
                 $signature = self::getOAuth1Signature($secret, $httpMethod, $resourceURI, $params);
                 $params->put("sig", $signature);
             }
-        } else {
-            $params->put("oauth_token", $token);
+        } else if (!empty($token)) {
+            if ($this->isMtls()) {
+                $params->put("apiKey", $token);
+            } else {
+                $params->put("oauth_token", $token);
+            }
         }
 
         /* Send the request to Gigya */
@@ -276,6 +343,21 @@ class GSRequest
             CURLOPT_PROXYUSERPWD => $this->proxyUserPass,
             CURLOPT_TIMEOUT_MS => $timeout
         );
+        
+        // Add mTLS certificate options if configured
+        if ($this->isMtls()) {
+            $defaults[CURLOPT_SSLCERT] = $this->clientCertPath;
+            $defaults[CURLOPT_SSLKEY] = $this->clientKeyPath;
+            
+            if ($this->clientKeyPassword) {
+                $defaults[CURLOPT_SSLKEYPASSWD] = $this->clientKeyPassword;
+            }
+            
+            // Enable client certificate authentication
+            $defaults[CURLOPT_SSLCERTTYPE] = 'PEM';
+            $defaults[CURLOPT_SSLKEYTYPE] = 'PEM';
+        }
+        
         $ch = curl_init();
         $mergedCurlArray = ($this->curlArray + $defaults); /* Merged overrides defaults with values from curlArray, if set */
 
