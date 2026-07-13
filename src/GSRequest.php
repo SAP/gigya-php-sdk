@@ -30,6 +30,7 @@ class GSRequest
     private $params; // GSObject
     private $useHTTPS;
     private $apiDomain = self::DEFAULT_API_DOMAIN;
+    private $lastHttpCode = null;
     
     // mTLS certificate properties
     private $clientCertPath;
@@ -232,7 +233,9 @@ class GSRequest
 
             $responseStr = $this->sendRequest($this->host, $this->path, $this->params, $this->apiKey, $this->secretKey, $this->useHTTPS, $timeout, $this->userKey, $this->privateKey);
 
-            return new GSResponse($this->method, $responseStr, null, 0, null, $this->traceLog);
+            $response = new GSResponse($this->method, $responseStr, null, 0, null, $this->traceLog);
+            $response->setLastHttpCode($this->lastHttpCode);
+            return $response;
         } catch (Exception $ex) {
             $errcode = 500000;
             $errMsg = $ex->getMessage();
@@ -370,11 +373,15 @@ class GSRequest
             $err = curl_error($ch);
             throw new Exception($err);
         }
+        $this->lastHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-        curl_close($ch);
 
         $header = trim(substr($result, 0, $header_size));
         $body = substr($result, $header_size);
+
+        if ($body === '' || $body === false) {
+            error_log("Gigya empty response - HTTP {$this->lastHttpCode} - method {$this->method}");
+        }
         $curlHeaders = explode("\r\n", $header);
         foreach ($curlHeaders as $value) {
             $kvp = explode(":", $value);

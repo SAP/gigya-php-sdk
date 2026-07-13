@@ -18,6 +18,7 @@ class GSResponse
     private $errorMessage = null;
     private $rawData = "";
     private $data; // GSObject
+    private $httpCode = null;
 
 	/** @var GSObject */
     private $params;
@@ -39,6 +40,22 @@ class GSResponse
     public function getErrorCode()
     {
         return $this->errorCode;
+    }
+
+	/**
+	 * HTTP status code of the underlying transport response.
+	 * Null when the request never reached the server (e.g. curl error).
+	 *
+	 * @return int|null
+	 */
+    public function getLastHttpCode()
+    {
+        return $this->httpCode;
+    }
+
+    public function setLastHttpCode($httpCode)
+    {
+        $this->httpCode = $httpCode;
     }
 
 	/**

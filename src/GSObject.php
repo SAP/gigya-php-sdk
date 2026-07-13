@@ -153,7 +153,7 @@ class GSObject
 	 */
     public function getDouble($key, $defaultValue = GSObject::DEFAULT_VALUE)
     {
-        return (double)$this->get($key, $defaultValue);
+        return (float)$this->get($key, $defaultValue);
     }
 
 	/**
